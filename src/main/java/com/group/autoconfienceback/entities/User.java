@@ -6,9 +6,10 @@ import lombok.*;
 @Entity
 @Getter
 @Setter
+@NoArgsConstructor
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "role")
-public abstract class User {
+public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
@@ -20,4 +21,12 @@ public abstract class User {
     private String password;
     private String resetCode;
 
+    public User(String name, String lastName, String address, String email, String password, String resetCode) {
+        this.name = name;
+        this.lastName = lastName;
+        this.address = address;
+        this.email = email;
+        this.password = password;
+        this.resetCode = resetCode;
+    }
 }

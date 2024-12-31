@@ -10,7 +10,6 @@ import java.time.LocalDateTime;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
 @Getter
 @Setter
 @DiscriminatorValue("employee")
@@ -21,4 +20,11 @@ public class Employee extends User {
 
     private LocalDateTime birthDate;
     private String poste;
+
+    public Employee(String name, String lastName, String address, String email, String password, String resetCode, byte[] photo, LocalDateTime birthDate, String poste) {
+        super(name, lastName, address, email, password, resetCode);
+        this.photo = photo;
+        this.birthDate = birthDate;
+        this.poste = poste;
+    }
 }
