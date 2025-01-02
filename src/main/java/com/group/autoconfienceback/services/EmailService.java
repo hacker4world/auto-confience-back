@@ -23,11 +23,14 @@ public class EmailService {
         this.templateEngine = templateEngine;
     }
 
-    public void sendEmail(String to, String title, String content) throws MessagingException {
+    public void sendPasswordResetCode(String to, String name, String resetCode) throws MessagingException {
 
         Context context = new Context();
 
-        String templateContent = templateEngine.process("account-created", context);
+        context.setVariable("name", name);
+        context.setVariable("code", resetCode);
+
+        String templateContent = templateEngine.process("reset-password", context);
 
         MimeMessage message = javaMailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(
@@ -37,7 +40,7 @@ public class EmailService {
         );
 
         helper.setTo(to);
-        helper.setSubject(title);
+        helper.setSubject("Reset your Auto-confience password");
         helper.setText(templateContent, true);
 
         javaMailSender.send(message);
