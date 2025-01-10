@@ -30,6 +30,9 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests(auth -> {
                     auth
                             .requestMatchers("/api/authentication/**").permitAll()
+                            .requestMatchers("/Api/Admin/CreateEmployee").hasRole("ADMIN")
+                            .requestMatchers("/Api/Admin/deleteEmployee/**").hasRole("ADMIN")
+                            .requestMatchers("/Api/Admin/updateEmployee/**").hasRole("ADMIN")
                             .anyRequest().authenticated();
                 });
 
