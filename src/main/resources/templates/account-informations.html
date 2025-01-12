@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Account Details</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 0;
+        }
+        .email-container {
+            max-width: 600px;
+            margin: 20px auto;
+            background: #ffffff;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 20px;
+        }
+        .header {
+            text-align: center;
+            background-color: #007bff;
+            color: white;
+            padding: 10px;
+            border-top-left-radius: 8px;
+            border-top-right-radius: 8px;
+        }
+        .content {
+            margin: 20px 0;
+        }
+        .content p {
+            margin: 10px 0;
+        }
+        .footer {
+            text-align: center;
+            font-size: 12px;
+            color: #666;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+<div class="email-container">
+    <div class="header">
+        <h1>Auto-confience account</h1>
+    </div>
+    <div class="content">
+        <p>Hello,</p>
+        <p>Here are your employee account details:</p>
+        <p><strong>Email:</strong> <span th:text="${email}">[Email]</span> </p>
+        <p><strong>Password:</strong> <span th:text="${password}">[Password]</span> </p>
+    </div>
+    <div class="footer">
+        <p>Need help? Contact us at <a href="mailto:support@auto-confiance.com">support@auto-confiance.com</a></p>
+        <p>Thank you, <br>The auto-confiance Team</p>
+    </div>
+</div>
+</body>
+</html>

@@ -21,12 +21,12 @@ public class User {
     private String password;
     private String resetCode;
 
-    public User(String name, String lastName, String address, String email, String password, String resetCode) {
+    public User(String name, String lastName, String address, String email, String password) {
         this.name = name;
         this.lastName = lastName;
         this.address = address;
         this.email = email;
         this.password = password;
-        this.resetCode = resetCode;
+        this.resetCode = "";
     }
 }

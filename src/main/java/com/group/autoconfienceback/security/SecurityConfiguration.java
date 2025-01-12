@@ -28,14 +28,8 @@ public class SecurityConfiguration {
                 .csrf(csrf -> csrf.disable())
                 .cors(cors -> cors.disable())
                 .authorizeHttpRequests(auth -> {
-                    auth
-                            .requestMatchers("/api/authentication/**").permitAll()
-                            .requestMatchers("/Api/Admin/CreateEmployee").hasRole("ADMIN")
-                            .requestMatchers("/Api/Admin/deleteEmployee/**").hasRole("ADMIN")
-                            .requestMatchers("/Api/Admin/updateEmployee/**").hasRole("ADMIN")
-                            .anyRequest().authenticated();
+                    auth.anyRequest().permitAll();
                 });
-
         return http.build();
     }
 

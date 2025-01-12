@@ -18,12 +18,11 @@ public class Employee extends User {
     @Lob
     private byte[] photo;
 
-    private LocalDateTime birthDate;
+    private String birthDate;
     private String poste;
 
-    public Employee(String name, String lastName, String address, String email, String password, String resetCode, byte[] photo, LocalDateTime birthDate, String poste) {
-        super(name, lastName, address, email, password, resetCode);
-        this.photo = photo;
+    public Employee(String name, String lastName, String address, String email, String password, String birthDate, String poste) {
+        super(name, lastName, address, email, password);
         this.birthDate = birthDate;
         this.poste = poste;
     }

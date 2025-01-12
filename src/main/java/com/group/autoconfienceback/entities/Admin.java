@@ -10,7 +10,7 @@ import lombok.*;
 @Setter
 @DiscriminatorValue("admin")
 public class Admin extends User {
-    public Admin(String name, String lastName, String address, String email, String password, String resetCode) {
-        super(name, lastName, address, email, password, resetCode);
+    public Admin(String name, String lastName, String address, String email, String password) {
+        super(name, lastName, address, email, password);
     }
 }
