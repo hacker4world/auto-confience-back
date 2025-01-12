@@ -7,6 +7,7 @@ import com.group.autoconfienceback.dto.authentication.SendPasswordResetCode;
 import com.group.autoconfienceback.dto.authentication.SignupDto;
 import com.group.autoconfienceback.entities.Client;
 import com.group.autoconfienceback.repositories.ClientRepository;
+import com.group.autoconfienceback.security.JwtService;
 import jakarta.mail.MessagingException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -27,12 +28,14 @@ public class AuthenticationService {
     private final ClientRepository clientRepository;
     private final PasswordEncoder passwordEncoder;
     private final EmailService emailService;
+    private final JwtService jwtService;
 
-    public AuthenticationService(AuthenticationProvider authenticationProvider, ClientRepository clientRepository, PasswordEncoder passwordEncoder, EmailService emailService) {
+    public AuthenticationService(AuthenticationProvider authenticationProvider, ClientRepository clientRepository, PasswordEncoder passwordEncoder, EmailService emailService, JwtService jwtService) {
         this.authenticationProvider = authenticationProvider;
         this.clientRepository = clientRepository;
         this.passwordEncoder = passwordEncoder;
         this.emailService = emailService;
+        this.jwtService = jwtService;
     }
 
     public ResponseEntity<ApiResponse<String>> login(LoginDto loginData) {
@@ -41,8 +44,9 @@ public class AuthenticationService {
                     new UsernamePasswordAuthenticationToken(loginData.getEmail(), loginData.getPassword())
             );
 
-            return ResponseEntity
-                    .ok(new ApiResponse<>("Login successful"));
+            String token = jwtService.generateToken(loginData.getEmail());
+
+            return ResponseEntity.ok(new ApiResponse<>(token));
 
         } catch (Exception e) {
             return ResponseEntity
@@ -65,7 +69,6 @@ public class AuthenticationService {
                 signupData.getAddress(),
                 signupData.getEmail(),
                 passwordEncoder.encode(signupData.getPassword()),
-                "",
                 signupData.getNumber()
         );
 

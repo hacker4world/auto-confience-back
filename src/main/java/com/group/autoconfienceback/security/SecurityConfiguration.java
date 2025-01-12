@@ -28,11 +28,8 @@ public class SecurityConfiguration {
                 .csrf(csrf -> csrf.disable())
                 .cors(cors -> cors.disable())
                 .authorizeHttpRequests(auth -> {
-                    auth
-                            .requestMatchers("/api/authentication/**").permitAll()
-                            .anyRequest().authenticated();
+                    auth.anyRequest().permitAll();
                 });
-
         return http.build();
     }
 

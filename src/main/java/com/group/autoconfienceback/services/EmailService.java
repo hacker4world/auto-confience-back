@@ -46,4 +46,27 @@ public class EmailService {
         javaMailSender.send(message);
     }
 
+    public void sendAccountInformations(String email, String password) throws MessagingException {
+        Context context = new Context();
+
+        context.setVariable("email", email);
+        context.setVariable("password", password);
+
+        String templateContent = templateEngine.process("account-informations", context);
+
+        MimeMessage message = javaMailSender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(
+                message,
+                MimeMessageHelper.MULTIPART_MODE_MIXED_RELATED,
+                StandardCharsets.UTF_8.name()
+        );
+
+        helper.setTo(email);
+        helper.setSubject("Your Auto-confience account informations");
+        helper.setText(templateContent, true);
+
+        javaMailSender.send(message);
+
+    }
+
 }

@@ -13,8 +13,8 @@ import lombok.experimental.SuperBuilder;
 public class Client extends User {
     private String number;
 
-    public Client(String name, String lastName, String address, String email, String password, String resetCode, String number) {
-        super(name, lastName, address, email, password, resetCode);
+    public Client(String name, String lastName, String address, String email, String password, String number) {
+        super(name, lastName, address, email, password);
         this.number = number;
     }
 }
