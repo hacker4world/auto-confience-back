@@ -1,14 +1,11 @@
 package com.group.autoconfienceback.dto;
 
 import lombok.Getter;
-import lombok.Setter;
 
 @Getter
-public class UpdateEmployeeDto {
+public class UpdateAdminAccount {
     private String email;
     private String name;
     private String lastName;
     private String address;
-    private String birthDate;
-    private String poste;
 }

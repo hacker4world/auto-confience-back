@@ -1,5 +1,7 @@
 package com.group.autoconfienceback.services;
 
+import com.group.autoconfienceback.dto.ApiResponse;
+import com.group.autoconfienceback.dto.DeleteAccountDto;
 import com.group.autoconfienceback.entities.Client;
 import com.group.autoconfienceback.repositories.ClientRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,18 +22,18 @@ public class ClientService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    public ResponseEntity<String> deleteAccount(int id, String password) {
-        Optional<Client> client = clientRepository.findById(id);
+    public ResponseEntity<ApiResponse<String>> deleteAccount(DeleteAccountDto accountData) {
+        Optional<Client> client = clientRepository.findByEmail(accountData.getEmail());
 
-        if (client.isEmpty()) return ResponseEntity.status(404).body("Client with id " + id + " not found");
+        if (client.isEmpty()) return ResponseEntity.status(404).body(new ApiResponse<>("Client with given email was not found"));
 
         String correctPassword = client.get().getPassword();
 
-        if (!passwordEncoder.matches(password, correctPassword)) return ResponseEntity.status(401).body("Incorrect password");
+        if (!passwordEncoder.matches(accountData.getPassword(), correctPassword)) return ResponseEntity.status(401).body(new ApiResponse<>("Incorrect password"));
 
         clientRepository.delete(client.get());
 
-        return ResponseEntity.ok("Account deleted");
+        return ResponseEntity.ok(new ApiResponse<>("Account deleted successfully"));
     }
 
 }

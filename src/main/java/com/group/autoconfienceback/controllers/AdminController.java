@@ -1,6 +1,8 @@
 package com.group.autoconfienceback.controllers;
 
+import com.group.autoconfienceback.dto.ApiResponse;
 import com.group.autoconfienceback.dto.EmployeeDto;
+import com.group.autoconfienceback.dto.UpdateAdminAccount;
 import com.group.autoconfienceback.dto.UpdateEmployeeDto;
 import com.group.autoconfienceback.services.AdminService;
 import jakarta.mail.MessagingException;
@@ -18,18 +20,24 @@ public class AdminController {
         this.adminService = adminService;
     }
 
-    @DeleteMapping("deleteEmployee/{id}")
-    public ResponseEntity<String>deleteEmployee(@PathVariable("id") int id){
-        return adminService.deleteEmployee(id);
+    @DeleteMapping("deleteEmployee/{email}")
+    public ResponseEntity<ApiResponse<String>>deleteEmployee(@PathVariable("email") String email){
+        return adminService.deleteEmployee(email);
     }
 
     @PostMapping("create-employee-account")
-    public ResponseEntity<String> createEmployee(@RequestBody EmployeeDto employeeData) throws MessagingException {
+    public ResponseEntity<ApiResponse<String>> createEmployee(@RequestBody EmployeeDto employeeData) throws MessagingException {
         return adminService.createEmployee(employeeData);
     }
 
-    @PutMapping("update-employee/{id}")
-    public ResponseEntity<String>updateEmployee(@PathVariable("id") int id, @RequestBody UpdateEmployeeDto employeeData){
-        return adminService.updateEmployee(id,employeeData);
+    @PutMapping("update-employee")
+    public ResponseEntity<ApiResponse<String>>updateEmployee(@RequestBody UpdateEmployeeDto employeeData){
+        return adminService.updateEmployee(employeeData);
     }
+
+    @PutMapping("update-account")
+    public ResponseEntity<ApiResponse<String>>updateAccount(@RequestBody UpdateAdminAccount employeeData){
+        return adminService.updateAccount(employeeData);
+    }
+
 }

@@ -1,14 +1,16 @@
 package com.group.autoconfienceback.services;
 
 import com.group.autoconfienceback.dto.ApiResponse;
-import com.group.autoconfienceback.dto.authentication.LoginDto;
-import com.group.autoconfienceback.dto.authentication.ResetPasswordDto;
-import com.group.autoconfienceback.dto.authentication.SendPasswordResetCode;
-import com.group.autoconfienceback.dto.authentication.SignupDto;
+import com.group.autoconfienceback.dto.UpdateAccountPassword;
+import com.group.autoconfienceback.dto.authentication.*;
 import com.group.autoconfienceback.entities.Client;
+import com.group.autoconfienceback.entities.Employee;
+import com.group.autoconfienceback.entities.User;
 import com.group.autoconfienceback.repositories.ClientRepository;
+import com.group.autoconfienceback.repositories.UserRepository;
 import com.group.autoconfienceback.security.JwtService;
 import jakarta.mail.MessagingException;
+import org.apache.coyote.Response;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -29,24 +31,36 @@ public class AuthenticationService {
     private final PasswordEncoder passwordEncoder;
     private final EmailService emailService;
     private final JwtService jwtService;
+    private final UserRepository userRepository;
 
-    public AuthenticationService(AuthenticationProvider authenticationProvider, ClientRepository clientRepository, PasswordEncoder passwordEncoder, EmailService emailService, JwtService jwtService) {
+    public AuthenticationService(AuthenticationProvider authenticationProvider, ClientRepository clientRepository, PasswordEncoder passwordEncoder, EmailService emailService, JwtService jwtService, UserRepository userRepository) {
         this.authenticationProvider = authenticationProvider;
         this.clientRepository = clientRepository;
         this.passwordEncoder = passwordEncoder;
         this.emailService = emailService;
         this.jwtService = jwtService;
+        this.userRepository = userRepository;
     }
 
-    public ResponseEntity<ApiResponse<String>> login(LoginDto loginData) {
+    public ResponseEntity<ApiResponse<LoginResponeDto>> login(LoginDto loginData) {
         try {
             Authentication authentication = authenticationProvider.authenticate(
                     new UsernamePasswordAuthenticationToken(loginData.getEmail(), loginData.getPassword())
             );
 
+            User user = userRepository.findByEmail(loginData.getEmail()).get();
+
             String token = jwtService.generateToken(loginData.getEmail());
 
-            return ResponseEntity.ok(new ApiResponse<>(token));
+            String userRole = "";
+
+            if (user instanceof Client) userRole = "client";
+            else if (user instanceof Employee) userRole = "employee";
+            else userRole = "admin";
+
+
+
+            return ResponseEntity.ok(new ApiResponse<>("Login successful", new LoginResponeDto(userRole, token, loginData.getEmail())));
 
         } catch (Exception e) {
             return ResponseEntity
@@ -113,6 +127,48 @@ public class AuthenticationService {
         clientRepository.save(client.get());
 
         return ResponseEntity.ok(new ApiResponse<>("Password reset successful"));
+
+    }
+
+    public ResponseEntity<ApiResponse<String>> updateAccountPassword(UpdateAccountPassword accountData) {
+        Optional<User> user = userRepository.findByEmail(accountData.getEmail());
+
+        if (user.isEmpty()) {
+            return ResponseEntity.status(404).body(new ApiResponse<>("the user with the email : " + accountData.getEmail() + " does not exist."));
+        }
+
+        User updateUser = user.get();
+
+        if (!passwordEncoder.matches(accountData.getOldPassword(), updateUser.getPassword())) return ResponseEntity.status(403).body(new ApiResponse<>("Invalid old password"));
+
+        updateUser.setPassword(passwordEncoder.encode(accountData.getNewPassword()));
+
+        userRepository.save(updateUser);
+
+        return ResponseEntity.status(200).body(new ApiResponse<>("Password updated successfully"));
+
+    }
+
+    public ResponseEntity<ApiResponse<ProfileDetails>> getProfileDetails(String email) {
+        Optional<User> user = userRepository.findByEmail(email);
+
+        if (user.isEmpty()) {
+            return ResponseEntity.status(404).body(new ApiResponse<>("the user with the email : " + email + " does not exist."));
+        }
+
+        User userInformations = user.get();
+
+        ProfileDetails details;
+
+        if (userInformations instanceof Employee employee) {
+            details = new ProfileDetails(employee.getName(), employee.getLastName(), employee.getAddress(), employee.getBirthDate(), employee.getPoste());
+        } else if (userInformations instanceof Client client) {
+            details = new ProfileDetails(client.getName(), client.getLastName(), client.getAddress(), client.getNumber());
+        } else {
+            details = new ProfileDetails(userInformations.getName(), userInformations.getLastName(), userInformations.getAddress());
+        }
+
+        return ResponseEntity.ok(new ApiResponse<>("Profile details retrieved successfully", details));
 
     }
 
