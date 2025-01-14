@@ -1,18 +1,13 @@
 package com.group.autoconfienceback.controllers;
 
 import com.group.autoconfienceback.dto.ApiResponse;
-import com.group.autoconfienceback.dto.authentication.LoginDto;
-import com.group.autoconfienceback.dto.authentication.ResetPasswordDto;
-import com.group.autoconfienceback.dto.authentication.SendPasswordResetCode;
-import com.group.autoconfienceback.dto.authentication.SignupDto;
+import com.group.autoconfienceback.dto.UpdateAccountPassword;
+import com.group.autoconfienceback.dto.authentication.*;
 import com.group.autoconfienceback.services.AuthenticationService;
 import jakarta.mail.MessagingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("api/authentication")
@@ -26,7 +21,7 @@ public class AuthenticationController {
     }
 
     @PostMapping("login")
-    public ResponseEntity<ApiResponse<String>> login(@RequestBody LoginDto loginData) {
+    public ResponseEntity<ApiResponse<LoginResponeDto>> login(@RequestBody LoginDto loginData) {
         return authenticationService.login(loginData);
 
     }
@@ -44,6 +39,16 @@ public class AuthenticationController {
     @PostMapping("reset-password")
     public ResponseEntity<ApiResponse<String>> resetPassword(@RequestBody ResetPasswordDto resetData) {
         return authenticationService.resetPassword(resetData);
+    }
+
+    @PutMapping("update-password")
+    public ResponseEntity<ApiResponse<String>> updatePassword(@RequestBody UpdateAccountPassword updateAccountPassword) {
+        return authenticationService.updateAccountPassword(updateAccountPassword);
+    }
+
+    @GetMapping("profile/{email}")
+    public ResponseEntity<ApiResponse<ProfileDetails>> getProfileDetails(@PathVariable String email) {
+        return authenticationService.getProfileDetails(email);
     }
 
 }

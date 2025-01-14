@@ -1,5 +1,6 @@
 package com.group.autoconfienceback.controllers;
 
+import com.group.autoconfienceback.dto.ApiResponse;
 import com.group.autoconfienceback.dto.DeleteAccountDto;
 import com.group.autoconfienceback.services.ClientService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,9 +18,9 @@ public class ClientController {
         this.clientService = clientService;
     }
 
-    @DeleteMapping("delete-account/{id}")
-    public ResponseEntity<String> deleteAccount(@PathVariable("id") int id, @RequestBody DeleteAccountDto accountDto) {
-        return clientService.deleteAccount(id, accountDto.getPassword());
+    @DeleteMapping("delete-account")
+    public ResponseEntity<ApiResponse<String>> deleteAccount(@RequestBody DeleteAccountDto accountDto) {
+        return clientService.deleteAccount(accountDto);
     }
 
 }
