@@ -2,6 +2,7 @@ package com.group.autoconfienceback.services;
 
 import com.group.autoconfienceback.dto.ApiResponse;
 import com.group.autoconfienceback.dto.DeleteAccountDto;
+import com.group.autoconfienceback.dto.UpdateClientAccount;
 import com.group.autoconfienceback.entities.Client;
 import com.group.autoconfienceback.repositories.ClientRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,5 +36,24 @@ public class ClientService {
 
         return ResponseEntity.ok(new ApiResponse<>("Account deleted successfully"));
     }
+
+    public ResponseEntity<ApiResponse<String>> updateClientAccount(UpdateClientAccount accountData) {
+        Optional<Client> client = clientRepository.findByEmail(accountData.getEmail());
+
+        if (client.isEmpty()) return ResponseEntity.status(404).body(new ApiResponse<>("Client with given email was not found"));
+
+        Client clientToUpdate = client.get();
+
+        clientToUpdate.setName(accountData.getName());
+        clientToUpdate.setLastName(accountData.getLastName());
+        clientToUpdate.setAddress(accountData.getAddress());
+        clientToUpdate.setNumber(accountData.getNumber());
+
+        clientRepository.save(clientToUpdate);
+
+        return ResponseEntity.ok(new ApiResponse<>("Account updated successfully"));
+    }
+
+
 
 }

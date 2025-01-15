@@ -2,6 +2,7 @@ package com.group.autoconfienceback.controllers;
 
 import com.group.autoconfienceback.dto.ApiResponse;
 import com.group.autoconfienceback.dto.DeleteAccountDto;
+import com.group.autoconfienceback.dto.UpdateClientAccount;
 import com.group.autoconfienceback.services.ClientService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -21,6 +22,11 @@ public class ClientController {
     @DeleteMapping("delete-account")
     public ResponseEntity<ApiResponse<String>> deleteAccount(@RequestBody DeleteAccountDto accountDto) {
         return clientService.deleteAccount(accountDto);
+    }
+
+    @PutMapping("update-account")
+    public ResponseEntity<ApiResponse<String>> updateAccount(@RequestBody UpdateClientAccount accountDto) {
+        return clientService.updateClientAccount(accountDto);
     }
 
 }
