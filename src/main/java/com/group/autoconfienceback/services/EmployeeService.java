@@ -7,7 +7,9 @@ import com.group.autoconfienceback.repositories.EmployeeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.Optional;
 
 @Service
@@ -37,6 +39,20 @@ public class EmployeeService {
 
     }
 
+    public ResponseEntity<ApiResponse<String>> changeEmployeeImage(MultipartFile imageFile, String email) throws IOException {
+        Optional<Employee> employee = employeeRepository.findByEmail(email);
+
+        if (employee.isEmpty()) return ResponseEntity.badRequest().body(new ApiResponse<>("Employee not found"));
+
+        Employee employeeToUpdate = employee.get();
+
+        employeeToUpdate.setPhoto(imageFile.getBytes());
+
+        employeeRepository.save(employeeToUpdate);
+
+        return ResponseEntity.ok(new ApiResponse<>("Image updated successfully"));
+
+    }
 
 
 }
