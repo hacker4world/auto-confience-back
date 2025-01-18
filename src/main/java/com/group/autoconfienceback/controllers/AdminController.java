@@ -1,14 +1,13 @@
 package com.group.autoconfienceback.controllers;
 
-import com.group.autoconfienceback.dto.ApiResponse;
-import com.group.autoconfienceback.dto.EmployeeDto;
-import com.group.autoconfienceback.dto.UpdateAdminAccount;
-import com.group.autoconfienceback.dto.UpdateEmployeeDto;
+import com.group.autoconfienceback.dto.*;
 import com.group.autoconfienceback.services.AdminService;
 import jakarta.mail.MessagingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("api/admin")
@@ -38,6 +37,11 @@ public class AdminController {
     @PutMapping("update-account")
     public ResponseEntity<ApiResponse<String>>updateAccount(@RequestBody UpdateAdminAccount employeeData){
         return adminService.updateAccount(employeeData);
+    }
+
+    @GetMapping("employees-list")
+    public ResponseEntity<ApiResponse<List<EmployeeDetailsDto>>>getEmployees(){
+        return adminService.getAllEmployees();
     }
 
 }

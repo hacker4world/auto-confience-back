@@ -16,6 +16,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 
@@ -56,10 +58,24 @@ public class AdminService {
 
         employeeRepository.save(newEmployee);
 
-        emailService.sendAccountInformations(newEmployee.getEmail(), newEmployee.getPassword());
+        emailService.sendAccountInformations(newEmployee.getEmail(), employeeData.getPassword());
 
         return ResponseEntity.ok(new ApiResponse<>("the employee has been created successfully"));
 
+
+    }
+
+    public ResponseEntity<ApiResponse<List<EmployeeDetailsDto>>> getAllEmployees() {
+        List<Employee> employees = employeeRepository.findAll();
+
+        List<EmployeeDetailsDto> employeesDto = new ArrayList<>();
+
+        employees.forEach(employee -> {
+            EmployeeDetailsDto details = new EmployeeDetailsDto(employee.getName(), employee.getLastName(), employee.getAddress(), employee.getEmail(), employee.getBirthDate(), employee.getPoste());
+            employeesDto.add(details);
+        });
+
+        return ResponseEntity.status(200).body(new ApiResponse<>("Employees list", employeesDto));
 
     }
 
