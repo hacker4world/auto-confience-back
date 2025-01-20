@@ -1,10 +1,11 @@
 package com.group.autoconfienceback.controllers;
 
 import com.group.autoconfienceback.dto.ApiResponse;
-import com.group.autoconfienceback.dto.UpdateAccountPassword;
+import com.group.autoconfienceback.dto.account_management.UpdateAccountPassword;
 import com.group.autoconfienceback.dto.authentication.*;
 import com.group.autoconfienceback.services.AuthenticationService;
 import jakarta.mail.MessagingException;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -27,27 +28,27 @@ public class AuthenticationController {
     }
 
     @PostMapping("signup")
-    public ResponseEntity<ApiResponse<String>> signup(@RequestBody SignupDto signupData) {
+    public ResponseEntity<ApiResponse<String>> signup(@Valid @RequestBody SignupDto signupData) {
         return authenticationService.signup(signupData);
     }
 
     @PostMapping("send-reset-code")
-    public ResponseEntity<ApiResponse<String>> sendPasswordResetCode(@RequestBody SendPasswordResetCode sendPasswordResetCode) throws MessagingException {
+    public ResponseEntity<ApiResponse<String>> sendPasswordResetCode(@Valid @RequestBody SendPasswordResetCodeDto sendPasswordResetCode) throws MessagingException {
         return authenticationService.sendPasswordResetCode(sendPasswordResetCode);
     }
 
     @PostMapping("reset-password")
-    public ResponseEntity<ApiResponse<String>> resetPassword(@RequestBody ResetPasswordDto resetData) {
+    public ResponseEntity<ApiResponse<String>> resetPassword(@Valid @RequestBody ResetPasswordDto resetData) {
         return authenticationService.resetPassword(resetData);
     }
 
     @PutMapping("update-password")
-    public ResponseEntity<ApiResponse<String>> updatePassword(@RequestBody UpdateAccountPassword updateAccountPassword) {
+    public ResponseEntity<ApiResponse<String>> updatePassword(@Valid @RequestBody UpdateAccountPassword updateAccountPassword) {
         return authenticationService.updateAccountPassword(updateAccountPassword);
     }
 
     @GetMapping("profile/{email}")
-    public ResponseEntity<ApiResponse<ProfileDetails>> getProfileDetails(@PathVariable String email) {
+    public ResponseEntity<ApiResponse<ProfileDetailsResponse>> getProfileDetails(@PathVariable String email) {
         return authenticationService.getProfileDetails(email);
     }
 

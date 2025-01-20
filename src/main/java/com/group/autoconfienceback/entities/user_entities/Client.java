@@ -1,9 +1,8 @@
-package com.group.autoconfienceback.entities;
+package com.group.autoconfienceback.entities.user_entities;
 
 import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
 import lombok.*;
-import lombok.experimental.SuperBuilder;
 
 @Entity
 @NoArgsConstructor

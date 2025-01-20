@@ -5,10 +5,8 @@ import jakarta.validation.constraints.NotEmpty;
 import lombok.Getter;
 
 @Getter
-public class LoginDto {
+public class SendPasswordResetCodeDto {
     @NotEmpty(message = "Account email is required")
     @Email(message = "Invalid email format")
     private String email;
-    @NotEmpty(message = "Account password is required")
-    private String password;
 }

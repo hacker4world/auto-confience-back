@@ -1,4 +1,4 @@
-package com.group.autoconfienceback.entities;
+package com.group.autoconfienceback.entities.user_entities;
 
 import jakarta.persistence.*;
 import lombok.*;

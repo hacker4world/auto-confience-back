@@ -1,9 +1,7 @@
 package com.group.autoconfienceback.entities;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import com.group.autoconfienceback.entities.user_entities.Client;
+import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
@@ -24,9 +22,13 @@ public class Meeting {
     private int day;
     private int month;
     private int year;
-    private boolean confirmed;
+    private int confirmed;
 
-    public Meeting(String carType, String carLicence, String name, String lastName, String phoneNumber, int hour, int minute, int day, int month, int year) {
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "client_id")
+    private Client client;
+
+    public Meeting(String carType, String carLicence, String name, String lastName, String phoneNumber, int hour, int minute, int day, int month, int year, Client client) {
         this.carType = carType;
         this.carLicence = carLicence;
         this.name = name;
@@ -37,7 +39,8 @@ public class Meeting {
         this.day = day;
         this.month = month;
         this.year = year;
-        this.confirmed = false;
+        this.confirmed = 0;
+        this.client = client;
     }
 
     public int toMinutes() {

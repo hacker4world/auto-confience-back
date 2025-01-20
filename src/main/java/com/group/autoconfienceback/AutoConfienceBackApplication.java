@@ -1,13 +1,11 @@
 package com.group.autoconfienceback;
 
-import com.group.autoconfienceback.entities.Admin;
-import com.group.autoconfienceback.entities.Client;
-import com.group.autoconfienceback.repositories.AdminRepository;
-import com.group.autoconfienceback.repositories.ClientRepository;
+import com.group.autoconfienceback.entities.user_entities.Admin;
+import com.group.autoconfienceback.repositories.user_repositories.AdminRepository;
+import com.group.autoconfienceback.repositories.user_repositories.ClientRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.annotation.Bean;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 @SpringBootApplication

@@ -1,22 +1,21 @@
 package com.group.autoconfienceback.services;
 
-
 import com.group.autoconfienceback.dto.*;
-import com.group.autoconfienceback.entities.Admin;
-import com.group.autoconfienceback.entities.Employee;
-import com.group.autoconfienceback.entities.User;
-import com.group.autoconfienceback.repositories.AdminRepository;
-import com.group.autoconfienceback.repositories.EmployeeRepository;
-import com.group.autoconfienceback.repositories.UserRepository;
+import com.group.autoconfienceback.dto.account_management.EmployeeDetailsResponse;
+import com.group.autoconfienceback.dto.account_management.EmployeeAccountDto;
+import com.group.autoconfienceback.dto.account_management.UpdateAdminAccount;
+import com.group.autoconfienceback.dto.account_management.UpdateEmployeeDto;
+import com.group.autoconfienceback.entities.user_entities.Admin;
+import com.group.autoconfienceback.entities.user_entities.Employee;
+import com.group.autoconfienceback.exceptions.ApiException;
+import com.group.autoconfienceback.mappers.AccountManagementMapper;
+import com.group.autoconfienceback.repositories.user_repositories.AdminRepository;
+import com.group.autoconfienceback.repositories.user_repositories.EmployeeRepository;
 import jakarta.mail.MessagingException;
-import org.hibernate.sql.Update;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -26,109 +25,72 @@ public class AdminService {
     private final AdminRepository adminRepository;
     private final EmployeeRepository employeeRepository;
     private final EmailService emailService;
-    private final PasswordEncoder passwordEncoder;
-    private final UserRepository userRepository;
+    private final AccountManagementMapper accountManagementMapper;
+    private final UtilityService utilityService;
 
     @Autowired
-    public AdminService(AdminRepository adminRepository, EmployeeRepository employeeRepository, EmailService emailService, PasswordEncoder passwordEncoder, UserRepository userRepository) {
+    public AdminService(AdminRepository adminRepository, EmployeeRepository employeeRepository, EmailService emailService, AccountManagementMapper accountManagementMapper, UtilityService utilityService) {
         this.adminRepository = adminRepository;
         this.employeeRepository = employeeRepository;
         this.emailService = emailService;
-        this.passwordEncoder = passwordEncoder;
-        this.userRepository = userRepository;
+        this.accountManagementMapper = accountManagementMapper;
+        this.utilityService = utilityService;
     }
 
-    public ResponseEntity<ApiResponse<String>> createEmployee(EmployeeDto employeeData) throws MessagingException {
-
+    public ResponseEntity<ApiResponse<String>> createEmployee(EmployeeAccountDto employeeData) throws MessagingException {
         Optional<Employee> employee = employeeRepository.findByEmail(employeeData.getEmail());
 
-        if (employee.isPresent()) {
-            return ResponseEntity.status(400).body(new ApiResponse<>("the email is already used"));
-        }
+        if (employee.isPresent()) throw new ApiException("Email is already in use", 409);
 
-        Employee newEmployee = new Employee(
-                employeeData.getName(),
-                employeeData.getLastName(),
-                employeeData.getAddress(),
-                employeeData.getEmail(),
-                passwordEncoder.encode(employeeData.getPassword()),
-                employeeData.getBirthDate(),
-                employeeData.getPoste()
-        );
+        Employee newEmployee = accountManagementMapper.createEmployeeFromDto(employeeData);
 
         employeeRepository.save(newEmployee);
 
         emailService.sendAccountInformations(newEmployee.getEmail(), employeeData.getPassword());
 
         return ResponseEntity.ok(new ApiResponse<>("the employee has been created successfully"));
-
-
     }
 
-    public ResponseEntity<ApiResponse<List<EmployeeDetailsDto>>> getAllEmployees() {
+    public ResponseEntity<ApiResponse<List<EmployeeDetailsResponse>>> getAllEmployees() {
         List<Employee> employees = employeeRepository.findAll();
 
-        List<EmployeeDetailsDto> employeesDto = new ArrayList<>();
-
-        employees.forEach(employee -> {
-            EmployeeDetailsDto details = new EmployeeDetailsDto(employee.getName(), employee.getLastName(), employee.getAddress(), employee.getEmail(), employee.getBirthDate(), employee.getPoste());
-            employeesDto.add(details);
-        });
+        List<EmployeeDetailsResponse> employeesDto = accountManagementMapper.createEmployeeListFromEmployees(employees);
 
         return ResponseEntity.status(200).body(new ApiResponse<>("Employees list", employeesDto));
-
     }
 
     public ResponseEntity<ApiResponse<String>> deleteEmployee(String email) {
+        Employee employee = utilityService.findEmployeeByEmail(email);
 
-        Optional<Employee> employee = employeeRepository.findByEmail(email);
-
-        if (employee.isEmpty()) {
-            return ResponseEntity.status(404).body(new ApiResponse<>("the employee with the given email does not exist"));
-        }
-
-        employeeRepository.delete(employee.get());
+        employeeRepository.delete(employee);
 
         return ResponseEntity.status(200).body(new ApiResponse<>("employee has been deleted"));
-
     }
 
-
     public ResponseEntity<ApiResponse<String>> updateEmployee(UpdateEmployeeDto employeeData) {
-        Optional<Employee> employee = employeeRepository.findByEmail(employeeData.getEmail());
+        Employee employee = utilityService.findEmployeeByEmail(employeeData.getEmail());
 
-        if (employee.isEmpty()) {
-            return ResponseEntity.status(404).body(new ApiResponse<>("the employee with the given email does not exist"));
-        }
-        Employee updateEmployee = employee.get();
-        updateEmployee.setName(employeeData.getName());
-        updateEmployee.setLastName(employeeData.getLastName());
-        updateEmployee.setAddress(employeeData.getAddress());
-        updateEmployee.setBirthDate(employeeData.getBirthDate());
-        updateEmployee.setPoste(employeeData.getPoste());
+        employee.setName(employeeData.getName());
+        employee.setLastName(employeeData.getLastName());
+        employee.setAddress(employeeData.getAddress());
+        employee.setBirthDate(employeeData.getBirthDate());
+        employee.setPoste(employeeData.getPoste());
 
-        employeeRepository.save(updateEmployee);
+        employeeRepository.save(employee);
 
         return ResponseEntity.status(200).body(new ApiResponse<>("employee has been updated"));
     }
 
     public ResponseEntity<ApiResponse<String>> updateAccount(UpdateAdminAccount adminData) {
-        Optional<Admin> admin = adminRepository.findByEmail(adminData.getEmail());
+        Admin admin = utilityService.findAdminByEmail(adminData.getEmail());
 
-        if (admin.isEmpty()) {
-            return ResponseEntity.status(404).body(new ApiResponse<>("the admin with the given email does not exist"));
-        }
+        admin.setName(adminData.getName());
+        admin.setLastName(adminData.getLastName());
+        admin.setAddress(adminData.getAddress());
 
-        Admin updateAdmin = admin.get();
-
-        updateAdmin.setName(adminData.getName());
-        updateAdmin.setLastName(adminData.getLastName());
-        updateAdmin.setAddress(adminData.getAddress());
-
-        adminRepository.save(updateAdmin);
+        adminRepository.save(admin);
 
         return ResponseEntity.status(200).body(new ApiResponse<>("admin has been updated"));
-
     }
 
 }

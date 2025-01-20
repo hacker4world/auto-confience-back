@@ -1,10 +1,10 @@
 package com.group.autoconfienceback.security;
 
-import com.group.autoconfienceback.entities.Admin;
-import com.group.autoconfienceback.entities.Client;
-import com.group.autoconfienceback.entities.Employee;
-import com.group.autoconfienceback.entities.User;
-import com.group.autoconfienceback.repositories.UserRepository;
+import com.group.autoconfienceback.entities.user_entities.Admin;
+import com.group.autoconfienceback.entities.user_entities.Client;
+import com.group.autoconfienceback.entities.user_entities.Employee;
+import com.group.autoconfienceback.entities.user_entities.User;
+import com.group.autoconfienceback.repositories.user_repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;

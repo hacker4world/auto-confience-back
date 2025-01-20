@@ -1,10 +1,14 @@
-package com.group.autoconfienceback.dto;
+package com.group.autoconfienceback.dto.meeting_management;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.Setter;
 
 @Getter
-public class RequestMeetingDto {
-    private String email;
+@Setter
+@AllArgsConstructor
+public class MeetingDto {
+    private int id;
     private String carType;
     private String carLicence;
     private String name;
@@ -15,4 +19,5 @@ public class RequestMeetingDto {
     private int day;
     private int month;
     private int year;
+    private int confirmed;
 }

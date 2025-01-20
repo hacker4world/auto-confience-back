@@ -33,11 +33,7 @@ public class EmailService {
         String templateContent = templateEngine.process("reset-password", context);
 
         MimeMessage message = javaMailSender.createMimeMessage();
-        MimeMessageHelper helper = new MimeMessageHelper(
-                message,
-                MimeMessageHelper.MULTIPART_MODE_MIXED_RELATED,
-                StandardCharsets.UTF_8.name()
-        );
+        MimeMessageHelper helper = getMimeMessageHelper(message);
 
         helper.setTo(to);
         helper.setSubject("Reset your Auto-confience password");
@@ -55,11 +51,8 @@ public class EmailService {
         String templateContent = templateEngine.process("account-informations", context);
 
         MimeMessage message = javaMailSender.createMimeMessage();
-        MimeMessageHelper helper = new MimeMessageHelper(
-                message,
-                MimeMessageHelper.MULTIPART_MODE_MIXED_RELATED,
-                StandardCharsets.UTF_8.name()
-        );
+
+        MimeMessageHelper helper = getMimeMessageHelper(message);
 
         helper.setTo(email);
         helper.setSubject("Your Auto-confience account informations");
@@ -67,6 +60,14 @@ public class EmailService {
 
         javaMailSender.send(message);
 
+    }
+
+    private MimeMessageHelper getMimeMessageHelper(MimeMessage message) throws MessagingException {
+        return new MimeMessageHelper(
+                message,
+                MimeMessageHelper.MULTIPART_MODE_MIXED_RELATED,
+                StandardCharsets.UTF_8.name()
+        );
     }
 
 }

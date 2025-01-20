@@ -1,11 +1,9 @@
-package com.group.autoconfienceback.entities;
+package com.group.autoconfienceback.entities.user_entities;
 
 import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Lob;
 import lombok.*;
-
-import java.time.LocalDateTime;
 
 @Entity
 @NoArgsConstructor
